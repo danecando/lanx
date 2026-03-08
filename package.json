@@ -1,0 +1,25 @@
+{
+  "name": "@danecando/lanx",
+  "version": "0.1.4",
+  "description": "LocalCan-style local domain and reverse proxy CLI for macOS and Linux",
+  "bin": {
+    "lanx": "bin/lanx.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node ./bin/lanx.js"
+  },
+  "keywords": [
+    "cli",
+    "local-dev",
+    "tls",
+    "reverse-proxy",
+    "mdns"
+  ],
+  "author": "dane",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.29.3"
+}
