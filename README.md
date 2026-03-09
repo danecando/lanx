@@ -45,8 +45,18 @@ lanx edit app --target http://127.0.0.1:4000
 
 4. Start the runtime:
 
+You will probably want to start the runtime with elevated permissions so that lanx can listen on ports 80 and 443. If lanx doesn't have permission to listen on those ports it will fall back to 8088 and 8443.
+
+If it is bound to 80 and 443 you can access your apps directly: `https://app.local` otherwise you will need to append the port number `https://app.local:8443`.
+
 ```bash
 lanx start
+```
+
+With elevated permissions:
+
+```bash
+sudo lanx start
 ```
 
 5. On a phone, open the built-in CA helper page:
