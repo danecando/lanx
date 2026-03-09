@@ -23,27 +23,27 @@ Install from npm:
 npm install -g @danecando/lanx
 ```
 
-## Quick Start
+## Setup
 
-1. Initialize lanx state and certificates:
+Initialize lanx state and certificates:
 
 ```bash
 lanx install
 ```
 
-2. Add a proxied domain:
+Add a proxied domain:
 
 ```bash
 lanx add app --target http://127.0.0.1:3000
 ```
 
-3. Update it later if needed:
+Update it later if needed:
 
 ```bash
 lanx edit app --target http://127.0.0.1:4000
 ```
 
-4. Start the runtime:
+## Usage
 
 `lanx start` always starts the runtime, publishes `lanx.local`, and serves the CA helper page there. You will probably want to start it with elevated permissions so that lanx can listen on ports 80 and 443. If lanx doesn't have permission to listen on those ports it will fall back to 8088 and 8443.
 
@@ -59,26 +59,17 @@ With elevated permissions:
 sudo lanx start
 ```
 
-5. On a phone, open the built-in CA helper page:
+Instructions for downloading and trusting your certificate on your mobile device are available at [https://lanx.local](https://lanx.local). Access your configured domains/apps on your local network [https://app.local](https://app.local).
+
+## Commands
 
 ```bash
-https://lanx.local
-```
-
-6. Access your configured apps/domains on your network
-
-```bash
-https://app.local
-```
-
-## Common Commands
-
-```bash
-lanx list
+lanx install
+lanx uninstall
 lanx add <name> [--port <n> | --target <url>]
 lanx edit <name> [--target <url> | --port <n>]
 lanx remove <name>
-lanx uninstall
+lanx list
 ```
 
 ## Data Location
