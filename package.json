@@ -1,10 +1,13 @@
 {
   "name": "@danecando/lanx",
   "version": "0.1.4",
-  "description": "LocalCan-style local domain and reverse proxy CLI for macOS and Linux",
+  "description": "LocalCan-style local domain and reverse proxy CLI for macOS",
   "bin": {
     "lanx": "bin/lanx.js"
   },
+  "os": [
+    "darwin"
+  ],
   "scripts": {
     "test": "node --test",
     "start": "node ./bin/lanx.js"

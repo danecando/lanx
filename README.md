@@ -1,6 +1,6 @@
 # lanx
 
-`lanx` is a small CLI for local development domains on macOS and Linux. It can:
+`lanx` is a small CLI for local development domains on macOS. It can:
 
 - generate local TLS certificates
 - manage domain entries (`add`, `edit`, `remove`, `list`)
@@ -11,17 +11,23 @@
 
 - Node.js 18+
 - `openssl`
-- macOS or Linux
+- macOS
 
 ## Install
 
-From this repository:
+Install from npm:
 
 ```bash
-npm link
+npm install -g @danecando/lanx
 ```
 
-That exposes the `lanx` command globally.
+That exposes the `lanx` command globally. The package is currently published for macOS only.
+
+You can also run it without a global install:
+
+```bash
+npx @danecando/lanx --help
+```
 
 ## Quick Start
 
@@ -58,13 +64,15 @@ https://lanx.local/
 ## Common Commands
 
 ```bash
-lanx --help
+lanx
 lanx list
 lanx add <name> [--port <n> | --target <url>]
 lanx edit <name> [--target <url> | --port <n>]
 lanx remove <name>
 lanx uninstall
 ```
+
+Running `lanx` with no arguments shows the command list and current version.
 
 ## Data Location
 

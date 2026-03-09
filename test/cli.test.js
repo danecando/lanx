@@ -39,11 +39,16 @@ function withCli(testFn) {
     const systemPath = require.resolve("../lib/system");
     const cliPath = require.resolve("../lib/cli");
     const system = require(systemPath);
+    const originalPlatform = process.platform;
     const original = {
       applyInstall: system.applyInstall,
       applyUninstall: system.applyUninstall
     };
 
+    Object.defineProperty(process, "platform", {
+      value: "darwin",
+      configurable: true
+    });
     system.applyInstall = () => {};
     system.applyUninstall = () => {};
     delete require.cache[cliPath];
@@ -52,6 +57,10 @@ function withCli(testFn) {
       const { runCli } = require("../lib/cli");
       await testFn(runCli, ...args);
     } finally {
+      Object.defineProperty(process, "platform", {
+        value: originalPlatform,
+        configurable: true
+      });
       system.applyInstall = original.applyInstall;
       system.applyUninstall = original.applyUninstall;
       delete require.cache[cliPath];
@@ -65,6 +74,45 @@ test("install creates state and root CA", withCli(async (runCli) => {
   assert.equal(fs.existsSync(home.configFile), true);
   assert.equal(fs.existsSync(path.join(home.stateDir, "certs", "root-ca.cert.pem")), true);
 }));
+
+test("no args shows usage with version", withCli(async (runCli) => {
+  const output = await capture(() => runCli([]));
+  assert.match(output, /^lanx v/m);
+  assert.match(output, /Usage:/);
+  assert.match(output, /lanx install/);
+}));
+
+test("unknown command shows usage and returns nonzero", withCli(async (runCli) => {
+  let exitCode;
+  const output = await capture(async () => {
+    exitCode = await runCli(["bogus"]);
+  });
+  assert.equal(exitCode, 1);
+  assert.match(output, /^lanx v/m);
+  assert.match(output, /Usage:/);
+  assert.match(output, /lanx list/);
+}));
+
+test("non-macOS platforms are rejected", async () => {
+  const cliPath = require.resolve("../lib/cli");
+  const originalPlatform = process.platform;
+  Object.defineProperty(process, "platform", {
+    value: "linux",
+    configurable: true
+  });
+  delete require.cache[cliPath];
+
+  try {
+    const { runCli } = require("../lib/cli");
+    await assert.rejects(() => runCli([]), /lanx currently supports macOS only\./);
+  } finally {
+    Object.defineProperty(process, "platform", {
+      value: originalPlatform,
+      configurable: true
+    });
+    delete require.cache[cliPath];
+  }
+});
 
 test("domain add, edit, and remove update state", withCli(async (runCli) => {
   const home = withHome();
