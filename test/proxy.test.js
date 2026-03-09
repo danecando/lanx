@@ -11,9 +11,14 @@ const { ensureLeafCertificate } = require("../lib/certs");
 const { startProxy, sanitizeHeaders, buildUpstreamPath } = require("../lib/proxy");
 
 function withHome() {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), "lanx-proxy-"));
-  process.env.LANX_HOME = home;
-  return home;
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "lanx-proxy-"));
+  const configHome = path.join(root, "config");
+  const stateHome = path.join(root, "state");
+  fs.mkdirSync(configHome, { recursive: true });
+  fs.mkdirSync(stateHome, { recursive: true });
+  process.env.XDG_CONFIG_HOME = configHome;
+  process.env.XDG_STATE_HOME = stateHome;
+  return root;
 }
 
 function listenHttpServer(server) {
@@ -77,7 +82,7 @@ test("proxy forwards HTTPS requests to configured upstream", async (t) => {
     target: `http://127.0.0.1:${upstreamPort}`,
     protocol: "https",
     port: 8443,
-    published: true,
+    enabled: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     certificate: null
