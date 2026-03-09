@@ -7,6 +7,8 @@
 - run a local HTTPS reverse proxy
 - apply trusted cert changes
 
+It's a free CLI based alternative to the LocalCan app
+
 ## Requirements
 
 - Node.js 18+
@@ -50,7 +52,13 @@ lanx start
 5. On a phone, open the built-in CA helper page:
 
 ```bash
-https://lanx.local/
+https://lanx.local
+```
+
+6. Access your configured apps/domains on your network
+
+```bash
+https://app.local
 ```
 
 ## Common Commands
