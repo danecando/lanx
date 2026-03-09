@@ -21,14 +21,6 @@ Install from npm:
 npm install -g @danecando/lanx
 ```
 
-That exposes the `lanx` command globally. The package is currently published for macOS only.
-
-You can also run it without a global install:
-
-```bash
-npx @danecando/lanx --help
-```
-
 ## Quick Start
 
 1. Initialize lanx state and certificates:
@@ -64,15 +56,12 @@ https://lanx.local/
 ## Common Commands
 
 ```bash
-lanx
 lanx list
 lanx add <name> [--port <n> | --target <url>]
 lanx edit <name> [--target <url> | --port <n>]
 lanx remove <name>
 lanx uninstall
 ```
-
-Running `lanx` with no arguments shows the command list and current version.
 
 ## Data Location
 
