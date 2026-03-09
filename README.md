@@ -7,7 +7,7 @@
 - run a local HTTPS reverse proxy
 - apply trusted cert changes
 
-It's a free CLI based alternative to the LocalCan app
+It's a free CLI based alternative to the [LocalCan](https://localcan.com) app.
 
 ## Requirements
 
