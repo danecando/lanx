@@ -1,7 +1,7 @@
 {
   "name": "@danecando/lanx",
-  "version": "0.1.4",
-  "description": "LocalCan-style local domain and reverse proxy CLI for macOS",
+  "version": "0.1.5",
+  "description": "macOS CLI for local HTTPS domains and reverse proxying",
   "bin": {
     "lanx": "bin/lanx.js"
   },
@@ -14,10 +14,13 @@
   },
   "keywords": [
     "cli",
+    "macos",
     "local-dev",
+    "local-domains",
+    "https",
     "tls",
     "reverse-proxy",
-    "mdns",
+    "ssl",
     "LocalCan"
   ],
   "author": "dane",

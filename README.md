@@ -1,13 +1,12 @@
 # lanx
 
-`lanx` is a small CLI for local development domains on macOS. It can:
+`lanx` is a macOS CLI for serving local apps on custom `.local` domains over HTTPS. It can:
 
-- generate local TLS certificates
-- manage domain entries (`add`, `edit`, `remove`, `list`)
+- generate and trust local TLS certificates
+- map domains to local apps
 - run a local HTTPS reverse proxy
-- apply trusted cert changes
 
-It's a free CLI based alternative to the [LocalCan](https://localcan.com) app.
+It's a free CLI alternative to the [LocalCan](https://localcan.com) app.
 
 ## Requirements
 
@@ -45,21 +44,25 @@ lanx edit app --target http://127.0.0.1:4000
 
 ## Usage
 
-`lanx start` always starts the runtime, publishes `lanx.local`, and serves the CA helper page there. You will probably want to start it with elevated permissions so that lanx can listen on ports 80 and 443. If lanx doesn't have permission to listen on those ports it will fall back to 8088 and 8443.
-
-If it is bound to 80 and 443 you can access your apps directly: `https://app.local` otherwise you will need to append the port number `https://app.local:8443`.
+Start the lanx runtime:
 
 ```bash
 lanx start
 ```
 
-With elevated permissions:
+This starts the local proxy, publishes `lanx.local`, and serves the certificate helper page there.
+
+For the simplest setup, start it with elevated permissions so it can bind to ports 80 and 443:
 
 ```bash
 sudo lanx start
 ```
 
-Instructions for downloading and trusting your certificate on your mobile device are available at [https://lanx.local](https://lanx.local). Access your configured domains/apps on your local network [https://app.local](https://app.local).
+When lanx can use ports 80 and 443, your apps are available directly at addresses like `https://app.local`.
+
+Without elevated permissions, lanx falls back to ports 8088 and 8443, so you will need to include the port, for example `https://app.local:8443`.
+
+The certificate helper page is available at [https://lanx.local](https://lanx.local). That page includes instructions for downloading and trusting your certificate on other devices on your local network.
 
 ## Commands
 
