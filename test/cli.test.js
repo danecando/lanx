@@ -75,6 +75,39 @@ test("install creates state and root CA", withCli(async (runCli) => {
   assert.equal(fs.existsSync(path.join(home.stateDir, "certs", "root-ca.cert.pem")), true);
 }));
 
+test("start always reports runtime details", withCli(async (runCli) => {
+  withHome();
+  const runtimePath = require.resolve("../lib/runtime");
+  const runtime = require(runtimePath);
+  const original = runtime.startRuntime;
+  runtime.startRuntime = async () => ({
+    runtime: "active",
+    message: "Runtime started with proxy listeners and discovery announcements.",
+    host: "0.0.0.0",
+    httpPort: 80,
+    httpsPort: 443,
+    proxyDomains: 0,
+    domainOnlyDomains: 0,
+    discoveryDomains: 1,
+    warnings: [],
+    waitForExit: async () => 0
+  });
+  delete require.cache[require.resolve("../lib/cli")];
+
+  try {
+    const { runCli: nextRunCli } = require("../lib/cli");
+    const output = await capture(() => nextRunCli(["start"]));
+    assert.match(output, /Runtime started with proxy listeners and discovery announcements\./);
+    assert.match(output, /Runtime listening on 0\.0\.0\.0:80 and 0\.0\.0\.0:443/);
+    assert.match(output, /CA helper: https:\/\/lanx\.local\//);
+    assert.match(output, /Proxy domains: 0/);
+    assert.match(output, /Discovery announcements: 1/);
+  } finally {
+    runtime.startRuntime = original;
+    delete require.cache[require.resolve("../lib/cli")];
+  }
+}));
+
 test("no args shows usage with version", withCli(async (runCli) => {
   const output = await capture(() => runCli([]));
   assert.match(output, /^lanx v/m);

@@ -17,12 +17,12 @@
     "local-dev",
     "tls",
     "reverse-proxy",
-    "mdns"
+    "mdns",
+    "LocalCan"
   ],
   "author": "dane",
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  },
-  "packageManager": "pnpm@10.29.3"
+  }
 }
