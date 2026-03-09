@@ -49,6 +49,12 @@ lanx edit app --target http://127.0.0.1:4000
 lanx start
 ```
 
+5. On a phone, open the built-in CA helper page:
+
+```bash
+https://lanx.local/
+```
+
 ## Common Commands
 
 ```bash
@@ -67,6 +73,8 @@ lanx uninstall
 - `.local` is implied, so `lanx add app` creates `app.local`.
 - `lanx` is HTTPS-only.
 - `install` and `uninstall` always apply system trust changes.
+- `start` tries to bind `80/443` first and falls back to `8088/8443` if privileged ports are unavailable.
+- `https://lanx.local/` serves a phone-friendly page with CA install steps and a direct certificate download.
 
 ## Data Location
 

@@ -113,6 +113,15 @@ test("add rejects non-.local domains", withCli(async (runCli) => {
   );
 }));
 
+test("add rejects reserved internal domain", withCli(async (runCli) => {
+  withHome();
+  await capture(() => runCli(["install"]));
+  await assert.rejects(
+    () => runCli(["add", "lanx", "--port", "3000"]),
+    /lanx\.local is reserved for lanx internal routes/
+  );
+}));
+
 test("add requires exactly one target or port", withCli(async (runCli) => {
   withHome();
   await capture(() => runCli(["install"]));
@@ -177,13 +186,14 @@ test("discovery records include proxy and domain-only entries", () => {
     { domain: "off.local", mode: "proxy", protocol: "https", port: 443 }
   ]);
 
-  assert.equal(records.length, 3);
+  assert.equal(records.length, 4);
   assert.deepEqual(
     records.map((record) => [record.domain, record.serviceType, record.port]),
     [
       ["app.local", "_https._tcp", 443],
       ["chat.local", "_https._tcp", 3000],
-      ["off.local", "_https._tcp", 443]
+      ["off.local", "_https._tcp", 443],
+      ["lanx.local", "_https._tcp", 443]
     ]
   );
   assert.equal(skipped.length, 1);
