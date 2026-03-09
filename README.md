@@ -66,16 +66,6 @@ lanx remove <name>
 lanx uninstall
 ```
 
-## Notes
-
-- `--target` creates or updates a proxied domain.
-- `--port` creates or updates a domain entry without a proxy target.
-- `.local` is implied, so `lanx add app` creates `app.local`.
-- `lanx` is HTTPS-only.
-- `install` and `uninstall` always apply system trust changes.
-- `start` tries to bind `80/443` first and falls back to `8088/8443` if privileged ports are unavailable.
-- `https://lanx.local/` serves a phone-friendly page with CA install steps and a direct certificate download.
-
 ## Data Location
 
 By default:
@@ -84,9 +74,3 @@ By default:
 - state: `$XDG_STATE_HOME/lanx` or `~/.local/state/lanx`
 
 You can override them with standard XDG environment variables such as `XDG_CONFIG_HOME` and `XDG_STATE_HOME`.
-
-## Development
-
-```bash
-npm test
-```
