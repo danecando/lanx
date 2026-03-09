@@ -5,7 +5,7 @@
 - generate local TLS certificates
 - manage domain entries (`add`, `edit`, `remove`, `list`)
 - run a local HTTPS reverse proxy
-- apply trusted cert + `/etc/hosts` changes
+- apply trusted cert changes
 
 ## Requirements
 
@@ -37,10 +37,10 @@ lanx install
 lanx add app --target http://127.0.0.1:3000
 ```
 
-3. Publish it to local hosts (optional):
+3. Update it later if needed:
 
 ```bash
-lanx edit app --enable
+lanx edit app --target http://127.0.0.1:4000
 ```
 
 4. Start the runtime:
@@ -54,8 +54,8 @@ lanx start
 ```bash
 lanx --help
 lanx list
-lanx add <name> [--port <n> | --target <url>] [--enable | --disable]
-lanx edit <name> [--target <url> | --port <n>] [--enable | --disable]
+lanx add <name> [--port <n> | --target <url>]
+lanx edit <name> [--target <url> | --port <n>]
 lanx remove <name>
 lanx uninstall
 ```
@@ -66,7 +66,7 @@ lanx uninstall
 - `--port` creates or updates a domain entry without a proxy target.
 - `.local` is implied, so `lanx add app` creates `app.local`.
 - `lanx` is HTTPS-only.
-- `install` and `uninstall` always apply system trust and hosts changes.
+- `install` and `uninstall` always apply system trust changes.
 
 ## Data Location
 

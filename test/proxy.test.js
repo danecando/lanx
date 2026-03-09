@@ -81,8 +81,7 @@ test("proxy forwards HTTPS requests to configured upstream", async (t) => {
     mode: "proxy",
     target: `http://127.0.0.1:${upstreamPort}`,
     protocol: "https",
-    port: 8443,
-    enabled: true,
+    port: 443,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     certificate: null

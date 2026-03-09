@@ -41,12 +41,10 @@ function withCli(testFn) {
     const system = require(systemPath);
     const original = {
       applyInstall: system.applyInstall,
-      applyEnabledHosts: system.applyEnabledHosts,
       applyUninstall: system.applyUninstall
     };
 
     system.applyInstall = () => {};
-    system.applyEnabledHosts = () => {};
     system.applyUninstall = () => {};
     delete require.cache[cliPath];
 
@@ -55,7 +53,6 @@ function withCli(testFn) {
       await testFn(runCli, ...args);
     } finally {
       system.applyInstall = original.applyInstall;
-      system.applyEnabledHosts = original.applyEnabledHosts;
       system.applyUninstall = original.applyUninstall;
       delete require.cache[cliPath];
     }
@@ -69,17 +66,15 @@ test("install creates state and root CA", withCli(async (runCli) => {
   assert.equal(fs.existsSync(path.join(home.stateDir, "certs", "root-ca.cert.pem")), true);
 }));
 
-test("domain add, edit enabled state, and remove update state", withCli(async (runCli) => {
+test("domain add, edit, and remove update state", withCli(async (runCli) => {
   const home = withHome();
   await capture(() => runCli(["install"]));
   const addOutput = await capture(() => runCli(["add", "app", "--target", "http://127.0.0.1:3000"]));
   assert.match(addOutput, /Restart `lanx start` to apply proxy changes\./);
-  await capture(() => runCli(["edit", "app", "--enable"]));
   const editOutput = await capture(() => runCli(["edit", "app", "--target", "http://127.0.0.1:4000"]));
   assert.match(editOutput, /Restart `lanx start` to apply proxy changes\./);
 
   const state = JSON.parse(fs.readFileSync(home.configFile, "utf8"));
-  assert.equal(state.domains["app.local"].enabled, true);
   assert.equal(state.domains["app.local"].target, "http://127.0.0.1:4000");
   assert.equal(state.domains["app.local"].mode, "proxy");
 
@@ -94,7 +89,7 @@ test("list shows configured domains", withCli(async (runCli) => {
   await capture(() => runCli(["install"]));
   await capture(() => runCli(["add", "app", "--target", "http://127.0.0.1:3000"]));
   const output = await capture(() => runCli(["list"]));
-  assert.match(output, /DOMAIN\s+MODE\s+ENABLED\s+ENDPOINT/);
+  assert.match(output, /DOMAIN\s+MODE\s+ENDPOINT/);
   assert.match(output, /app\.local/);
 }));
 
@@ -155,16 +150,6 @@ test("edit rejects unknown options", withCli(async (runCli) => {
   );
 }));
 
-test("edit rejects both enable and disable together", withCli(async (runCli) => {
-  withHome();
-  await capture(() => runCli(["install"]));
-  await capture(() => runCli(["add", "app", "--target", "http://127.0.0.1:3000"]));
-  await assert.rejects(
-    () => runCli(["edit", "app", "--enable", "--disable"]),
-    /Provide only one of --enable or --disable/
-  );
-}));
-
 test("edit rejects both target and port together", withCli(async (runCli) => {
   withHome();
   await capture(() => runCli(["install"]));
@@ -184,20 +169,21 @@ test("uninstall removes the lanx home directory", withCli(async (runCli) => {
   assert.equal(fs.existsSync(home.stateDir), false);
 }));
 
-test("discovery records include enabled proxy and domain-only entries", () => {
+test("discovery records include proxy and domain-only entries", () => {
   const { records, skipped } = buildDiscoveryRecords([
-    { domain: "app.local", mode: "proxy", enabled: true, protocol: "https", port: null },
-    { domain: "chat.local", mode: "domain-only", enabled: true, protocol: "https", port: 3000 },
-    { domain: "bad.local", mode: "domain-only", enabled: true, protocol: "https", port: null },
-    { domain: "off.local", mode: "proxy", enabled: false, protocol: "https", port: 8443 }
+    { domain: "app.local", mode: "proxy", protocol: "https", port: null },
+    { domain: "chat.local", mode: "domain-only", protocol: "https", port: 3000 },
+    { domain: "bad.local", mode: "domain-only", protocol: "https", port: null },
+    { domain: "off.local", mode: "proxy", protocol: "https", port: 443 }
   ]);
 
-  assert.equal(records.length, 2);
+  assert.equal(records.length, 3);
   assert.deepEqual(
     records.map((record) => [record.domain, record.serviceType, record.port]),
     [
-      ["app.local", "_https._tcp", 8443],
-      ["chat.local", "_https._tcp", 3000]
+      ["app.local", "_https._tcp", 443],
+      ["chat.local", "_https._tcp", 3000],
+      ["off.local", "_https._tcp", 443]
     ]
   );
   assert.equal(skipped.length, 1);
