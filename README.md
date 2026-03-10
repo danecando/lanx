@@ -73,6 +73,7 @@ lanx add <name> [--port <n> | --target <url>]
 lanx edit <name> [--target <url> | --port <n>]
 lanx remove <name>
 lanx list
+lanx start
 ```
 
 ## Data Location
